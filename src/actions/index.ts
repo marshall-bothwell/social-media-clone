@@ -4,3 +4,6 @@ export { createTopic } from './create-topic';
 export { signIn } from './sign-in';
 export { signOut } from './sign-out'
 export { search } from './search';
+export { deleteComment } from './delete-comment';
+export { deletePost } from './delete-post';
+export { deleteTopic } from './delete-topic';

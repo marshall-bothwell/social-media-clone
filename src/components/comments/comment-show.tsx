@@ -1,29 +1,45 @@
-import type { CommentWithAuthor } from '@/db/queries/comments'
+
+import type { User } from 'next-auth';
 import Image from "next/image";
 import { Button } from "@nextui-org/react";
 import CommentCreateForm from "@/components/comments/comment-create-form";
 import { fetchCommentsByPostId } from "@/db/queries/comments";
 import { deleteComment } from "@/actions/delete-comment";
+import DeleteCommentButton from "@/components/comments/delete-comment-button";
+import { auth } from '@/auth';
 
 interface CommentShowProps {
     commentId: string;
     postId: string;
+    slug: string;
 }
 
-export default async function CommentShow({ commentId, postId }: CommentShowProps) {
+export default async function CommentShow({ commentId, postId, slug }: CommentShowProps) {
     const comments = await fetchCommentsByPostId(postId);
     const comment = comments.find((c) => c.id === commentId);
-
-    const deleteCommentAction = deleteComment.bind(null, commentId);
 
     if (!comment) {
         return null;
     }
 
+    const session = await auth();
+    let currentUser: User | undefined
+    if (session) {
+        currentUser = session.user
+    }
+
+    const deleteCommentAction = deleteComment.bind(null, commentId, slug, postId);
+
+    const deleteCommentButton = (
+        <form action={deleteCommentAction}>
+            <DeleteCommentButton>Delete</DeleteCommentButton>
+        </form>
+    )
+
     const children = comments.filter((c) => c.parentId === commentId);
     const renderedChildren = children.map((child) => {
         return (
-            <CommentShow key={child.id} commentId={child.id} postId={postId} />
+            <CommentShow key={child.id} commentId={child.id} postId={postId} slug={slug} />
         );
     });
 
@@ -42,13 +58,12 @@ export default async function CommentShow({ commentId, postId }: CommentShowProp
                         <p className="text-sm font-medium text-gray-500">
                             {comment.user.name}
                         </p>
-                        <form action={deleteCommentAction}>
-                            <Button type="submit">Delete Comment</Button>
-                        </form>
                     </div>
                     <p className="text-gray-900">{comment.content}</p>
-
-                    <CommentCreateForm postId={comment.postId} parentId={comment.id} />
+                    <div className="flex flex-row">
+                        <CommentCreateForm postId={comment.postId} parentId={comment.id} />
+                        { currentUser?.id === comment.user.id ? deleteCommentButton : null }
+                    </div>
                 </div>
             </div>
             <div className="pl-4">{renderedChildren}</div>

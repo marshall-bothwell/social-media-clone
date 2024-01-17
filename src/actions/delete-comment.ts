@@ -6,15 +6,13 @@ import { revalidatePath } from 'next/cache';
 import paths from '@/paths';
 
 
-export async function deleteComment(id: string) {
+export async function deleteComment(commentId: string, topicSlug: string, postId: string) {
     
     await db.comment.delete({
-        where: { id: id }
+        where: { id: commentId }
     })
     
 
-    //revalidatePath(paths.postShow())
-    //Revalidate postShow path
-
-    redirect(paths.home());
+    revalidatePath(paths.postShow(topicSlug, postId));
+    redirect(paths.postShow(topicSlug, postId));
 }

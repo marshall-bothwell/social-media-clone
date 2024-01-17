@@ -5,10 +5,11 @@ import { fetchCommentsByPostId } from '@/db/queries/comments';
 
 interface CommentListProps {
     postId: string;
+    slug: string;
 }
 
 // TODO: Get a list of comments from somewhere
-export default async function CommentList({ postId }: CommentListProps) {
+export default async function CommentList({ postId, slug }: CommentListProps) {
     const comments = await fetchCommentsByPostId(postId);
 
     const topLevelComments = comments.filter(
@@ -20,6 +21,7 @@ export default async function CommentList({ postId }: CommentListProps) {
                 key={comment.id}
                 commentId={comment.id}
                 postId={postId}
+                slug={slug}
             />
         );
     });

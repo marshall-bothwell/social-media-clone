@@ -26,7 +26,7 @@ export default async function PostShowPage({ params }: PostShowPageProps) {
                 <PostShow postId={postId} />
             </Suspense>
             <CommentCreateForm postId={postId} startOpen />
-            <CommentList postId={postId} /> 
+            <CommentList postId={postId} slug={slug} /> 
         </div>
     );
 }

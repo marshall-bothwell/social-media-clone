@@ -3,7 +3,7 @@ import { cache } from 'react'
 import { db } from '@/db';
 
 export type CommentWithAuthor = Comment & { 
-    user: { name: string | null; image: string | null }; 
+    user: { name: string | null; image: string | null; id: string | null }; 
 };
 
 export const fetchCommentsByPostId = cache( (postId: string): Promise<CommentWithAuthor[]> => {
@@ -14,6 +14,7 @@ export const fetchCommentsByPostId = cache( (postId: string): Promise<CommentWit
                 select: {
                     name: true,
                     image: true,
+                    id: true
                 }
             }
         }
