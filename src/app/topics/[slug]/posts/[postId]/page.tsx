@@ -23,7 +23,7 @@ export default async function PostShowPage({ params }: PostShowPageProps) {
                 {"< "}Back to {slug}
             </Link>
             <Suspense fallback={<PostShowLoading />}>
-                <PostShow postId={postId} />
+                <PostShow postId={postId} slug={slug} />
             </Suspense>
             <CommentCreateForm postId={postId} startOpen />
             <CommentList postId={postId} slug={slug} /> 

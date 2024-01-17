@@ -1,11 +1,10 @@
 
 import type { User } from 'next-auth';
 import Image from "next/image";
-import { Button } from "@nextui-org/react";
 import CommentCreateForm from "@/components/comments/comment-create-form";
 import { fetchCommentsByPostId } from "@/db/queries/comments";
 import { deleteComment } from "@/actions/delete-comment";
-import DeleteCommentButton from "@/components/comments/delete-comment-button";
+import FormButton from '@/components/common/form-button';
 import { auth } from '@/auth';
 
 interface CommentShowProps {
@@ -32,7 +31,7 @@ export default async function CommentShow({ commentId, postId, slug }: CommentSh
 
     const deleteCommentButton = (
         <form action={deleteCommentAction}>
-            <DeleteCommentButton>Delete</DeleteCommentButton>
+            <FormButton size="sm" variant="light">Delete</FormButton>
         </form>
     )
 
