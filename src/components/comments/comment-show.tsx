@@ -2,7 +2,8 @@ import type { CommentWithAuthor } from '@/db/queries/comments'
 import Image from "next/image";
 import { Button } from "@nextui-org/react";
 import CommentCreateForm from "@/components/comments/comment-create-form";
-import { fetchCommentsByPostId } from "@/db/queries/comments"
+import { fetchCommentsByPostId } from "@/db/queries/comments";
+import { deleteComment } from "@/actions/delete-comment";
 
 interface CommentShowProps {
     commentId: string;
@@ -12,6 +13,8 @@ interface CommentShowProps {
 export default async function CommentShow({ commentId, postId }: CommentShowProps) {
     const comments = await fetchCommentsByPostId(postId);
     const comment = comments.find((c) => c.id === commentId);
+
+    const deleteCommentAction = deleteComment.bind(null, commentId);
 
     if (!comment) {
         return null;
@@ -35,9 +38,14 @@ export default async function CommentShow({ commentId, postId }: CommentShowProp
                     className="w-10 h-10 rounded-full"
                 />
                 <div className="flex-1 space-y-3">
-                    <p className="text-sm font-medium text-gray-500">
-                        {comment.user.name}
-                    </p>
+                    <div>
+                        <p className="text-sm font-medium text-gray-500">
+                            {comment.user.name}
+                        </p>
+                        <form action={deleteCommentAction}>
+                            <Button type="submit">Delete Comment</Button>
+                        </form>
+                    </div>
                     <p className="text-gray-900">{comment.content}</p>
 
                     <CommentCreateForm postId={comment.postId} parentId={comment.id} />
